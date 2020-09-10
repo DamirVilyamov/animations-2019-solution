@@ -24,8 +24,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private val RectangleObjectsList = ArrayList<AnimObjectRectangle>()
     private val CircleObjectsList = ArrayList<AnimObjectCircle>()
-    private val objectAnimators = ArrayList<ObjectAnimator>()
+
+
     private val animatorSets = ArrayList<AnimatorSet>()
+
     private val raws = ArrayList<Int>()
     private val TAG = "!@#"
     private var isPaused = false
@@ -115,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         return -1
     }
 
+    //works fine
     private fun getAnimInfo(resId: Int) {
         RectangleObjectsList.clear()
         CircleObjectsList.clear()
@@ -143,9 +146,6 @@ class MainActivity : AppCompatActivity() {
                 val height = inputList[i + 4].toFloat().toInt()
                 val angle = inputList[i + 5].toFloat()
                 val color = getColor(inputList[i + 6])
-                val moveAnimations = ArrayList<MoveAnimation>()
-                val rotateAnimations = ArrayList<RotateAnimation>()
-                val scaleAnimations = ArrayList<ScaleAnimation>()
                 val animations = ArrayList<Anims>()
                 val animationsNum = inputList[i + 7].toInt()
                 var animCount = 0
@@ -161,7 +161,6 @@ class MainActivity : AppCompatActivity() {
                                 cycle = true
                             }
                             val moveAnim = MoveAnimation(animDestX, animDestY, time, cycle)
-                            moveAnimations.add(moveAnim)
 
                             animations.add(moveAnim)
 
@@ -173,7 +172,6 @@ class MainActivity : AppCompatActivity() {
                             val time = inputList[i + 10 + animCount].toLong()
                             val cycle = inputList[i + 11 + animCount].toBoolean()
                             val scaleAnim = ScaleAnimation(destScale, time, cycle)
-                            scaleAnimations.add(scaleAnim)
 
                             animations.add(scaleAnim)
 
@@ -185,7 +183,6 @@ class MainActivity : AppCompatActivity() {
                             val time = inputList[i + 10 + animCount].toLong()
                             val cycle = inputList[i + 11 + animCount].toBoolean()
                             val rotateAnim = RotateAnimation(animAngle, time, cycle)
-                            rotateAnimations.add(rotateAnim)
 
                             animations.add(rotateAnim)
 
@@ -201,9 +198,6 @@ class MainActivity : AppCompatActivity() {
                     height,
                     angle,
                     color,
-                    moveAnimations,
-                    rotateAnimations,
-                    scaleAnimations,
                     animations
                 )
                 RectangleObjectsList.add(rect)
@@ -214,9 +208,6 @@ class MainActivity : AppCompatActivity() {
                 val centerY = inputList[i + 2].toFloat().toInt()
                 val radius = inputList[i + 3].toFloat()
                 val color = getColor(inputList[i + 4])
-                val moveAnimations = ArrayList<MoveAnimation>()
-                val rotateAnimations = ArrayList<RotateAnimation>()
-                val scaleAnimations = ArrayList<ScaleAnimation>()
                 val animations = ArrayList<Anims>()
                 val animationsNum = inputList[i + 5].toInt()
                 var animCount = 0
@@ -229,7 +220,6 @@ class MainActivity : AppCompatActivity() {
                             val time = inputList[i + 9 + animCount].toLong()
                             val cycle = inputList[i + 10 + animCount].toBoolean()
                             val moveanim = MoveAnimation(animDestX, animDestY, time, cycle)
-                            moveAnimations.add(moveanim)
 
                             animations.add(moveanim)
 
@@ -241,7 +231,6 @@ class MainActivity : AppCompatActivity() {
                             val time = inputList[i + 8 + animCount].toLong()
                             val cycle = inputList[i + 9 + animCount].toBoolean()
                             val scaleAnim = ScaleAnimation(destScale, time, cycle)
-                            scaleAnimations.add(scaleAnim)
 
                             animations.add(scaleAnim)
 
@@ -253,7 +242,6 @@ class MainActivity : AppCompatActivity() {
                             val time = inputList[i + 8 + animCount].toLong()
                             val cycle = inputList[i + 9 + animCount].toBoolean()
                             val rotateAnim = RotateAnimation(animAngle, time, cycle)
-                            rotateAnimations.add(rotateAnim)
 
                             animations.add(rotateAnim)
 
@@ -267,9 +255,6 @@ class MainActivity : AppCompatActivity() {
                     centerY,
                     radius,
                     color,
-                    moveAnimations,
-                    rotateAnimations,
-                    scaleAnimations,
                     animations
                 )
                 CircleObjectsList.add(circ)
@@ -326,8 +311,7 @@ class MainActivity : AppCompatActivity() {
                             objectAnimator.repeatMode = ObjectAnimator.REVERSE
                         }
 
-                        objectAnimator.setAutoCancel(false)
-                        objectAnimators.add(objectAnimator)
+                        objectAnimator.setAutoCancel(true)
 
                         when (animCount) {
                             0 -> {
@@ -353,7 +337,7 @@ class MainActivity : AppCompatActivity() {
                             objectAnimatorRotate.repeatCount = ObjectAnimator.INFINITE
                             objectAnimatorRotate.repeatMode = ObjectAnimator.REVERSE
                         }
-                        objectAnimators.add(objectAnimatorRotate)
+                        objectAnimatorRotate.setAutoCancel(true)
 
                         when (animCount) {
                             0 -> {
@@ -385,9 +369,8 @@ class MainActivity : AppCompatActivity() {
                             objectAnimatorScale.repeatMode = ObjectAnimator.REVERSE
                         }
 
-                        objectAnimatorScale.setAutoCancel(false)
+                        objectAnimatorScale.setAutoCancel(true)
 
-                        objectAnimators.add(objectAnimatorScale)
 
 
                         when (animCount) {
@@ -427,65 +410,12 @@ class MainActivity : AppCompatActivity() {
                             secondAnimObjectAnimator
                         )
                     }
+                } else {
+                    animatorSet.play(firstAnimObjectAnimator)
                 }
-                animatorSet.play(firstAnimObjectAnimator)
             }
 
             animatorSets.add(animatorSet)
-            /* for (anim in rectObject.moveAnims) {
-
-                 val objectAnimatorX =
-                     ObjectAnimator.ofFloat(imageView, "x", (anim.destX - rectObject.centerX))
-                         .setDuration(anim.time)
-
-                 val objectAnimatorY =
-                     ObjectAnimator.ofFloat(imageView, "y", (anim.destY - rectObject.centerY))
-                         .setDuration(anim.time)
-
-                 if (anim.cycle) {
-                     objectAnimatorX.repeatCount = ObjectAnimator.INFINITE
-                     objectAnimatorX.repeatMode = ObjectAnimator.REVERSE
-                     objectAnimatorY.repeatCount = ObjectAnimator.INFINITE
-                     objectAnimatorY.repeatMode = ObjectAnimator.REVERSE
-                 }
-
-                 objectAnimatorX.setAutoCancel(false)
-                 objectAnimatorY.setAutoCancel(false)
-                 objectAnimators.add(objectAnimatorX)
-                 objectAnimators.add(objectAnimatorY)
-
-
-             }
-
-             for (rotateAnim in rectObject.rotateAnims) {
-                 val objectAnimatorRotate =
-                     ObjectAnimator.ofFloat(imageView, "rotation", rotateAnim.angle)
-                         .setDuration(rotateAnim.time)
-                 if (rotateAnim.cycle) {
-                     objectAnimatorRotate.repeatCount = ObjectAnimator.INFINITE
-                     objectAnimatorRotate.repeatMode = ObjectAnimator.REVERSE
-                 }
-                 objectAnimators.add(objectAnimatorRotate)
-             }
-
-             for (scaleAnim in rectObject.scaleAnims) {
-                 val objectAnimatorScaleX =
-                     ObjectAnimator.ofFloat(imageView, "scaleX", scaleAnim.destScale)
-                         .setDuration(scaleAnim.time)
-                 val objectAnimatorScaleY =
-                     ObjectAnimator.ofFloat(imageView, "scaleY", scaleAnim.destScale)
-                         .setDuration(scaleAnim.time)
-
-                 if (scaleAnim.cycle) {
-                     objectAnimatorScaleX.repeatCount = ObjectAnimator.INFINITE
-                     objectAnimatorScaleX.repeatMode = ObjectAnimator.REVERSE
-                 }
-                 objectAnimatorScaleX.setAutoCancel(false)
-                 objectAnimatorScaleY.setAutoCancel(false)
-
-                 objectAnimators.add(objectAnimatorScaleX)
-                 objectAnimators.add(objectAnimatorScaleY)
-             }*/
 
             canvasView.addView(imageView, params)
         }
@@ -529,8 +459,7 @@ class MainActivity : AppCompatActivity() {
                             objectAnimator.repeatMode = ObjectAnimator.REVERSE
                         }
 
-                        objectAnimator.setAutoCancel(false)
-                        objectAnimators.add(objectAnimator)
+                        objectAnimator.setAutoCancel(true)
 
                         when (circleObject.Anims.indexOf(anim)) {
                             0 -> {
@@ -554,9 +483,7 @@ class MainActivity : AppCompatActivity() {
                             objectAnimatorRotate.repeatCount = ObjectAnimator.INFINITE
                             objectAnimatorRotate.repeatMode = ObjectAnimator.REVERSE
                         }
-
-                        objectAnimators.add(objectAnimatorRotate)
-
+                        objectAnimatorRotate.setAutoCancel(true)
 
                         when (circleObject.Anims.indexOf(anim)) {
                             0 -> {
@@ -585,9 +512,7 @@ class MainActivity : AppCompatActivity() {
                             objectAnimatorScale.repeatMode = ObjectAnimator.REVERSE
                         }
 
-                        objectAnimatorScale.setAutoCancel(false)
-
-                        objectAnimators.add(objectAnimatorScale)
+                        objectAnimatorScale.setAutoCancel(true)
 
                         when (circleObject.Anims.indexOf(anim)) {
                             0 -> {
@@ -621,63 +546,11 @@ class MainActivity : AppCompatActivity() {
                             secondAnimObjectAnimator
                         )
                     }
+                } else{
+                    animatorSet.play(firstAnimObjectAnimator)
                 }
             }
             animatorSets.add(animatorSet)
-
-            /*for (moveAnim in circleObject.moveAnims) {
-                val objectAnimatorX =
-                    ObjectAnimator.ofFloat(imageView, "x", (moveAnim.destX - circleObject.centerX))
-                        .setDuration(moveAnim.time)
-
-                val objectAnimatorY =
-                    ObjectAnimator.ofFloat(imageView, "y", (moveAnim.destY - circleObject.centerY))
-                        .setDuration(moveAnim.time)
-
-                if (moveAnim.cycle) {
-                    objectAnimatorX.repeatCount = ObjectAnimator.INFINITE
-                    objectAnimatorX.repeatMode = ObjectAnimator.REVERSE
-                    objectAnimatorY.repeatCount = ObjectAnimator.INFINITE
-                    objectAnimatorY.repeatMode = ObjectAnimator.REVERSE
-                }
-
-                objectAnimatorX.setAutoCancel(false)
-                objectAnimatorY.setAutoCancel(false)
-                objectAnimators.add(objectAnimatorX)
-                objectAnimators.add(objectAnimatorY)
-
-            }
-            for (rotateAnim in circleObject.rotateAnims) {
-                val objectAnimatorRotate =
-                    ObjectAnimator.ofFloat(imageView, "rotation", rotateAnim.angle)
-                        .setDuration(rotateAnim.time)
-                if (rotateAnim.cycle) {
-                    objectAnimatorRotate.repeatCount = ObjectAnimator.INFINITE
-                    objectAnimatorRotate.repeatMode = ObjectAnimator.REVERSE
-                }
-                objectAnimators.add(objectAnimatorRotate)
-            }
-            for (scaleAnim in circleObject.scaleAnims) {
-                val objectAnimatorScaleX =
-                    ObjectAnimator.ofFloat(imageView, "scaleX", scaleAnim.destScale)
-                        .setDuration(scaleAnim.time)
-                val objectAnimatorScaleY =
-                    ObjectAnimator.ofFloat(imageView, "scaleY", scaleAnim.destScale)
-                        .setDuration(scaleAnim.time)
-
-                if (scaleAnim.cycle) {
-                    objectAnimatorScaleX.repeatCount = ObjectAnimator.INFINITE
-                    objectAnimatorScaleX.repeatMode = ObjectAnimator.REVERSE
-                    objectAnimatorScaleY.repeatCount = ObjectAnimator.INFINITE
-                    objectAnimatorScaleY.repeatMode = ObjectAnimator.REVERSE
-                }
-
-                objectAnimatorScaleX.setAutoCancel(false)
-                objectAnimatorScaleY.setAutoCancel(false)
-
-                objectAnimators.add(objectAnimatorScaleX)
-                objectAnimators.add(objectAnimatorScaleY)
-            }*/
 
             canvasView.addView(imageView, params)
         }

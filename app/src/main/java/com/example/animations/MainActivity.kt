@@ -282,9 +282,9 @@ class MainActivity : AppCompatActivity() {
             imageView.rotation = rectObject.angle
             val params = RelativeLayout.LayoutParams(rectObject.width, rectObject.height)
             params.leftMargin =
-                rectObject.centerX - rectObject.width / 2//to place the center but not the left border
+                rectObject.centerX - (rectObject.width / 2)//to place the center but not the left border
             params.topMargin =
-                rectObject.centerY - rectObject.height / 2//to place the center but not the top border
+                rectObject.centerY - (rectObject.height / 2)//to place the center but not the top border
 
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
@@ -424,8 +424,8 @@ class MainActivity : AppCompatActivity() {
             val imageView = ImageView(this)
 
             val params = RelativeLayout.LayoutParams(
-                circleObject.radius.toInt(),
-                circleObject.radius.toInt()
+                circleObject.radius.toInt()*2,
+                circleObject.radius.toInt()*2
             )
             params.leftMargin =
                 circleObject.centerX - circleObject.radius.toInt()//to place the center but not the left border
@@ -433,10 +433,12 @@ class MainActivity : AppCompatActivity() {
                 circleObject.centerY - circleObject.radius.toInt()//to place the center but not the top border
 
             val drawable = GradientDrawable()
-            drawable.shape = GradientDrawable.RING
+            drawable.shape = GradientDrawable.RECTANGLE
+            drawable.cornerRadius = circleObject.radius
             drawable.setColor(circleObject.color)
 
             imageView.setImageDrawable(drawable)
+
             var firstAnimObjectAnimator: ObjectAnimator? = null
             var secondAnimObjectAnimator: ObjectAnimator? = null
             var thirdAnimObjectAnimator: ObjectAnimator? = null
@@ -546,12 +548,11 @@ class MainActivity : AppCompatActivity() {
                             secondAnimObjectAnimator
                         )
                     }
-                } else{
+                } else {
                     animatorSet.play(firstAnimObjectAnimator)
                 }
             }
             animatorSets.add(animatorSet)
-
             canvasView.addView(imageView, params)
         }
 
